@@ -63,3 +63,5 @@ textarea { resize: vertical; margin-top: 8px; }
 .actions { display: flex; gap: 12px; margin-top: 8px; font-size: 13px; }
 .actions a, .actions button { color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; font: inherit; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+.foot { text-align: center; color: var(--muted); font-size: 13px; padding: 8px 16px 24px; }
+.foot a { color: var(--muted); }

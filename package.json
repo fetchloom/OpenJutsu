@@ -2,6 +2,7 @@
   "name": "openjutsu",
   "version": "0.1.0",
   "description": "Open-source video-to-video editing studio (Motion Transfer + Object Swap) on ComfyUI and open-weight models.",
+  "author": "Fetchloom and Alex",
   "license": "MIT",
   "type": "module",
   "private": false,

@@ -6,6 +6,8 @@ Open-source, web-based video-to-video studio inspired by Higgsfield Genjutsu. It
 - **Object Swap**: click an object, give it a reference image or prompt, and leave the rest of the shot as filmed.
 - Up to 8 reference images, presets (no prompt needed), pose or depth control, fast and quality tiers, side-by-side before/after.
 
+Made by Fetchloom and Alex.
+
 > Not affiliated with Higgsfield. OpenJutsu is an independent project that does not use their code or weights.
 
 ## Status: v0.1 (alpha)
@@ -105,4 +107,4 @@ browser ──► server/server.js ──► ComfyUI (/upload, /prompt, /history
 
 ## Contributing
 
-PRs welcome. `npm test` must pass. Workflow changes should come with an updated `validate-comfy` case. MIT licensed.
+PRs welcome. `npm test` must pass. Workflow changes should come with an updated `validate-comfy` case. MIT licensed, © Fetchloom and Alex.
