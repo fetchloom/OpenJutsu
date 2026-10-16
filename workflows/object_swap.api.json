@@ -1,0 +1,289 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "wan2.1_vace_1.3B_fp16.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "2": {
+    "class_type": "ModelSamplingSD3",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "shift": 8
+    }
+  },
+  "3": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "type": "wan",
+      "device": "default"
+    }
+  },
+  "4": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "wan_2.1_vae.safetensors"
+    }
+  },
+  "5": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "a knight in ornate armor",
+      "clip": [
+        "3",
+        0
+      ]
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "blurry, low quality, jpeg artifacts, static, deformed, extra limbs, bad hands, flicker, watermark, text, subtitles",
+      "clip": [
+        "3",
+        0
+      ]
+    }
+  },
+  "7": {
+    "class_type": "LoadVideo",
+    "inputs": {
+      "file": "sample.mp4"
+    }
+  },
+  "8": {
+    "class_type": "Video Slice",
+    "inputs": {
+      "video": [
+        "7",
+        0
+      ],
+      "start_time": 0,
+      "duration": 5.5625,
+      "strict_duration": false
+    }
+  },
+  "9": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": [
+        "8",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "ImageFromBatch",
+    "inputs": {
+      "image": [
+        "9",
+        0
+      ],
+      "batch_index": 0,
+      "length": 81
+    }
+  },
+  "11": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "10",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 480,
+      "crop": "center"
+    }
+  },
+  "12": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "reference.png"
+    }
+  },
+  "13": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "12",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 480,
+      "crop": "center"
+    }
+  },
+  "14": {
+    "class_type": "DownloadAndLoadSAM2Model",
+    "inputs": {
+      "model": "sam2.1_hiera_base_plus.safetensors",
+      "segmentor": "video",
+      "device": "cuda",
+      "precision": "bf16"
+    }
+  },
+  "15": {
+    "class_type": "Sam2Segmentation",
+    "inputs": {
+      "sam2_model": [
+        "14",
+        0
+      ],
+      "image": [
+        "11",
+        0
+      ],
+      "keep_model_loaded": false,
+      "coordinates_positive": "[{\"x\":416,\"y\":240}]",
+      "coordinates_negative": "[{\"x\":75,\"y\":48}]",
+      "individual_objects": false
+    }
+  },
+  "16": {
+    "class_type": "GrowMask",
+    "inputs": {
+      "mask": [
+        "15",
+        0
+      ],
+      "expand": 8,
+      "tapered_corners": true
+    }
+  },
+  "17": {
+    "class_type": "EmptyImage",
+    "inputs": {
+      "width": 832,
+      "height": 480,
+      "batch_size": 81,
+      "color": 8421504
+    }
+  },
+  "18": {
+    "class_type": "ImageCompositeMasked",
+    "inputs": {
+      "destination": [
+        "11",
+        0
+      ],
+      "source": [
+        "17",
+        0
+      ],
+      "x": 0,
+      "y": 0,
+      "resize_source": false,
+      "mask": [
+        "16",
+        0
+      ]
+    }
+  },
+  "19": {
+    "class_type": "WanVaceToVideo",
+    "inputs": {
+      "positive": [
+        "5",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ],
+      "width": 832,
+      "height": 480,
+      "length": 81,
+      "batch_size": 1,
+      "strength": 1,
+      "control_video": [
+        "18",
+        0
+      ],
+      "control_masks": [
+        "16",
+        0
+      ],
+      "reference_image": [
+        "13",
+        0
+      ]
+    }
+  },
+  "20": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "2",
+        0
+      ],
+      "seed": 1,
+      "steps": 25,
+      "cfg": 6,
+      "sampler_name": "uni_pc",
+      "scheduler": "simple",
+      "positive": [
+        "19",
+        0
+      ],
+      "negative": [
+        "19",
+        1
+      ],
+      "latent_image": [
+        "19",
+        2
+      ],
+      "denoise": 1
+    }
+  },
+  "21": {
+    "class_type": "TrimVideoLatent",
+    "inputs": {
+      "samples": [
+        "20",
+        0
+      ],
+      "trim_amount": [
+        "19",
+        3
+      ]
+    }
+  },
+  "22": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "21",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    }
+  },
+  "23": {
+    "class_type": "SaveWEBM",
+    "inputs": {
+      "images": [
+        "22",
+        0
+      ],
+      "filename_prefix": "openjutsu/object_swap",
+      "codec": "vp9",
+      "fps": 16,
+      "crf": 24
+    }
+  }
+}

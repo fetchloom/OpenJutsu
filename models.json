@@ -1,0 +1,18 @@
+{
+  "_note": "Single source of truth for model files. Names follow the Comfy-Org repackaged Wan 2.1 layout; run `npm run validate-comfy` against a live ComfyUI to confirm each name is visible.",
+  "tiers": {
+    "fast":    { "unet": "wan2.1_vace_1.3B_fp16.safetensors", "steps": 25, "cfg": 6.0 },
+    "quality": { "unet": "wan2.1_vace_14B_fp16.safetensors",  "steps": 30, "cfg": 5.0 }
+  },
+  "clip": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+  "vae": "wan_2.1_vae.safetensors",
+  "sam2": "sam2.1_hiera_base_plus.safetensors",
+  "pose": { "bbox": "yolox_l.onnx", "estimator": "dw-ll_ucoco_384.onnx" },
+  "depth": "depth_anything_v2_vitl.pth",
+  "downloads": [
+    { "dest": "models/diffusion_models/wan2.1_vace_1.3B_fp16.safetensors", "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_vace_1.3B_fp16.safetensors" },
+    { "dest": "models/diffusion_models/wan2.1_vace_14B_fp16.safetensors", "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/diffusion_models/wan2.1_vace_14B_fp16.safetensors", "optional": true },
+    { "dest": "models/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors", "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/text_encoders/umt5_xxl_fp8_e4m3fn_scaled.safetensors" },
+    { "dest": "models/vae/wan_2.1_vae.safetensors", "url": "https://huggingface.co/Comfy-Org/Wan_2.1_ComfyUI_repackaged/resolve/main/split_files/vae/wan_2.1_vae.safetensors" }
+  ]
+}

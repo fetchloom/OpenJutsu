@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenJutsu</title>
+<meta name="description" content="Open-source video-to-video studio: Motion Transfer and Object Swap on ComfyUI.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23ff5a36'/%3E%3Cpath d='M9 22 16 8l7 14' stroke='%23fff' stroke-width='3' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">⟁</span> OpenJutsu <span id="mockBadge" class="badge" hidden>mock backend</span></div>
+  <nav class="tabs" role="tablist">
+    <button role="tab" id="tab-motion_transfer" data-mode="motion_transfer" aria-selected="true">Motion Transfer</button>
+    <button role="tab" id="tab-object_swap" data-mode="object_swap" aria-selected="false">Object Swap</button>
+  </nav>
+  <a class="gh" href="https://github.com/fetchloom/OpenJutsu" id="ghLink" target="_blank" rel="noopener">GitHub</a>
+</header>
+
+<main class="layout">
+  <section class="panel" aria-label="Inputs">
+    <p id="modeHelp" class="help"></p>
+
+    <h2>1 · Source video</h2>
+    <label class="drop" id="videoDrop">
+      <input type="file" id="videoFile" accept="video/mp4,video/quicktime,video/webm,video/x-matroska" hidden>
+      <span id="videoDropText">Drop a video or click to upload</span>
+    </label>
+    <div class="stage" id="stage" hidden>
+      <video id="preview" muted playsinline controls></video>
+      <canvas id="pick"></canvas>
+    </div>
+    <p class="hint" id="pickHint" hidden>Click the object to swap. Shift-click (or right-click) marks what to leave alone.
+      <button class="link" id="clearPoints" type="button">clear points</button></p>
+    <div class="row" id="trimRow" hidden>
+      <label>Start (s) <input type="number" id="start" min="0" step="0.5" value="0"></label>
+      <label>Length (s) <input type="number" id="seconds" min="1" max="5" step="1" value="5"></label>
+    </div>
+
+    <h2>2 · Reference images <small id="refCount">0/8</small></h2>
+    <div class="refs" id="refs">
+      <label class="add" title="Add reference images">+<input type="file" id="refFile" accept="image/png,image/jpeg,image/webp" multiple hidden></label>
+    </div>
+
+    <h2>3 · Preset or prompt</h2>
+    <div class="chips" id="presets"></div>
+    <textarea id="prompt" rows="3" maxlength="1500" placeholder="Optional with a reference image. Describe the new cast, setting or style."></textarea>
+
+    <details class="adv">
+      <summary>Advanced</summary>
+      <div class="row">
+        <label>Quality <select id="tier"></select></label>
+        <label>Resolution <select id="resolution"><option>480p</option><option>720p</option></select></label>
+        <label id="controlWrap">Keep <select id="control"><option value="pose">motion only (pose)</option><option value="depth">motion + camera (depth)</option></select></label>
+      </div>
+      <div class="row">
+        <label>Seed <input type="number" id="seed" placeholder="random"></label>
+        <label>Strength <input type="number" id="strength" min="0.2" max="2" step="0.1" value="1"></label>
+      </div>
+      <label>API token <input type="password" id="token" placeholder="only if the server sets OPENJUTSU_TOKEN" autocomplete="off"></label>
+    </details>
+
+    <button id="go" class="go" disabled>Generate</button>
+    <p id="err" class="err" role="alert" hidden></p>
+  </section>
+
+  <section class="results" aria-label="Results">
+    <h2>Results</h2>
+    <div id="empty" class="empty">Your generations show up here, with the original beside each result.</div>
+    <div id="jobs"></div>
+  </section>
+</main>
+<script src="app.js" type="module"></script>
+</body>
+</html>

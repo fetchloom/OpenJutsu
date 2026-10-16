@@ -1,0 +1,10 @@
+[
+  { "id": "anime",      "mode": "motion_transfer", "name": "Anime",        "prompt": "hand-drawn anime style, clean line art, vivid cel shading" },
+  { "id": "claymation", "mode": "motion_transfer", "name": "Claymation",   "prompt": "stop-motion claymation, handmade plasticine characters, soft studio lighting" },
+  { "id": "cyberpunk",  "mode": "motion_transfer", "name": "Cyberpunk",    "prompt": "neon-lit cyberpunk city at night, rain, reflective streets, cinematic" },
+  { "id": "noir",       "mode": "motion_transfer", "name": "Film noir",    "prompt": "black and white film noir, hard shadows, 1940s cinematography" },
+  { "id": "lego",       "mode": "motion_transfer", "name": "Brick world",  "prompt": "everything built from toy bricks, glossy plastic, macro depth of field" },
+  { "id": "outfit",     "mode": "object_swap",     "name": "New outfit",   "prompt": "the person wearing the outfit from the reference image, natural fabric motion" },
+  { "id": "product",    "mode": "object_swap",     "name": "Product swap", "prompt": "the product from the reference image, same position, lighting and motion as the original object" },
+  { "id": "pet",        "mode": "object_swap",     "name": "Swap creature","prompt": "the creature from the reference image, matching the original's movement and scale" }
+]

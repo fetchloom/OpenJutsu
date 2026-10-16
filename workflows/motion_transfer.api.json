@@ -1,0 +1,234 @@
+{
+  "1": {
+    "class_type": "UNETLoader",
+    "inputs": {
+      "unet_name": "wan2.1_vace_1.3B_fp16.safetensors",
+      "weight_dtype": "default"
+    }
+  },
+  "2": {
+    "class_type": "ModelSamplingSD3",
+    "inputs": {
+      "model": [
+        "1",
+        0
+      ],
+      "shift": 8
+    }
+  },
+  "3": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
+      "type": "wan",
+      "device": "default"
+    }
+  },
+  "4": {
+    "class_type": "VAELoader",
+    "inputs": {
+      "vae_name": "wan_2.1_vae.safetensors"
+    }
+  },
+  "5": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "a knight in ornate armor",
+      "clip": [
+        "3",
+        0
+      ]
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "blurry, low quality, jpeg artifacts, static, deformed, extra limbs, bad hands, flicker, watermark, text, subtitles",
+      "clip": [
+        "3",
+        0
+      ]
+    }
+  },
+  "7": {
+    "class_type": "LoadVideo",
+    "inputs": {
+      "file": "sample.mp4"
+    }
+  },
+  "8": {
+    "class_type": "Video Slice",
+    "inputs": {
+      "video": [
+        "7",
+        0
+      ],
+      "start_time": 0,
+      "duration": 5.5625,
+      "strict_duration": false
+    }
+  },
+  "9": {
+    "class_type": "GetVideoComponents",
+    "inputs": {
+      "video": [
+        "8",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "ImageFromBatch",
+    "inputs": {
+      "image": [
+        "9",
+        0
+      ],
+      "batch_index": 0,
+      "length": 81
+    }
+  },
+  "11": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "10",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 480,
+      "crop": "center"
+    }
+  },
+  "12": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "reference.png"
+    }
+  },
+  "13": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "12",
+        0
+      ],
+      "upscale_method": "lanczos",
+      "width": 832,
+      "height": 480,
+      "crop": "center"
+    }
+  },
+  "14": {
+    "class_type": "DWPreprocessor",
+    "inputs": {
+      "image": [
+        "11",
+        0
+      ],
+      "detect_hand": "enable",
+      "detect_body": "enable",
+      "detect_face": "enable",
+      "resolution": 480,
+      "bbox_detector": "yolox_l.onnx",
+      "pose_estimator": "dw-ll_ucoco_384.onnx"
+    }
+  },
+  "15": {
+    "class_type": "WanVaceToVideo",
+    "inputs": {
+      "positive": [
+        "5",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ],
+      "width": 832,
+      "height": 480,
+      "length": 81,
+      "batch_size": 1,
+      "strength": 1,
+      "control_video": [
+        "14",
+        0
+      ],
+      "reference_image": [
+        "13",
+        0
+      ]
+    }
+  },
+  "16": {
+    "class_type": "KSampler",
+    "inputs": {
+      "model": [
+        "2",
+        0
+      ],
+      "seed": 1,
+      "steps": 25,
+      "cfg": 6,
+      "sampler_name": "uni_pc",
+      "scheduler": "simple",
+      "positive": [
+        "15",
+        0
+      ],
+      "negative": [
+        "15",
+        1
+      ],
+      "latent_image": [
+        "15",
+        2
+      ],
+      "denoise": 1
+    }
+  },
+  "17": {
+    "class_type": "TrimVideoLatent",
+    "inputs": {
+      "samples": [
+        "16",
+        0
+      ],
+      "trim_amount": [
+        "15",
+        3
+      ]
+    }
+  },
+  "18": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "17",
+        0
+      ],
+      "vae": [
+        "4",
+        0
+      ]
+    }
+  },
+  "19": {
+    "class_type": "SaveWEBM",
+    "inputs": {
+      "images": [
+        "18",
+        0
+      ],
+      "filename_prefix": "openjutsu/motion_transfer",
+      "codec": "vp9",
+      "fps": 16,
+      "crf": 24
+    }
+  }
+}

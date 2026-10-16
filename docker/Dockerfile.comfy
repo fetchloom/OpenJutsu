@@ -1,0 +1,17 @@
+# GPU worker: ComfyUI + the two custom-node packs OpenJutsu needs. Models are fetched at first start
+# into a volume (see docker/entrypoint.sh) so the image itself stays small.
+FROM pytorch/pytorch:2.5.1-cuda12.4-cudnn9-runtime
+RUN apt-get update && apt-get install -y --no-install-recommends git ffmpeg curl libgl1 libglib2.0-0 && rm -rf /var/lib/apt/lists/*
+WORKDIR /opt
+RUN git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git && pip install --no-cache-dir -r ComfyUI/requirements.txt
+WORKDIR /opt/ComfyUI/custom_nodes
+RUN git clone --depth 1 https://github.com/Fannovel16/comfyui_controlnet_aux.git \
+ && pip install --no-cache-dir -r comfyui_controlnet_aux/requirements.txt \
+ && git clone --depth 1 https://github.com/kijai/ComfyUI-segment-anything-2.git \
+ && pip install --no-cache-dir -r ComfyUI-segment-anything-2/requirements.txt || true
+COPY models.json /opt/models.json
+COPY docker/entrypoint.sh /opt/entrypoint.sh
+RUN chmod +x /opt/entrypoint.sh
+WORKDIR /opt/ComfyUI
+EXPOSE 8188
+ENTRYPOINT ["/opt/entrypoint.sh"]
