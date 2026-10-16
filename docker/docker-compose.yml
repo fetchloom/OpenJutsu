@@ -4,6 +4,7 @@ services:
     build: { context: .., dockerfile: docker/Dockerfile.comfy }
     volumes: [ "comfy-models:/opt/ComfyUI/models", "comfy-output:/opt/ComfyUI/output" ]
     deploy: { resources: { reservations: { devices: [ { driver: nvidia, count: 1, capabilities: [gpu] } ] } } }
+    environment: { OPENJUTSU_QUALITY: "${OPENJUTSU_QUALITY:-0}" }  # 1 = also fetch the 14B model
     # Not published to the host: only the web service can reach ComfyUI (it has no auth of its own).
   web:
     image: node:24-alpine
